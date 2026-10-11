@@ -51,3 +51,26 @@ Grant Notification Access from the in-app prompt to get DM push.
   stubbed in `LaunchBlockerReceiver`.
 * Instagram changes its DOM regularly; selectors in `GuardJs` may need updates,
   but layers 1 & 3 (touch interception + URL blocking) keep working regardless.
+
+## Download / Install
+
+**Prebuilt APK (fastest):** `NoDoomscroll-debug.apk` in the repo root (~7.6 MB).
+AirDrop/email it to the phone, tap it, allow "Install unknown apps", or sideload:
+
+```bash
+adb install -r NoDoomscroll-debug.apk
+```
+
+**Full source project:** `NoDoomscroll-project.zip` (33 files, includes Gradle wrapper 8.10.2 + all Kotlin sources).
+Unzip, then open the folder in Android Studio (Iguana+ / targetSdk 35):
+
+```bash
+unzip NoDoomscroll-project.zip -d NoDoomscroll && cd NoDoomscroll && ./gradlew assembleDebug
+# APK lands at app/build/outputs/apk/debug/app-debug.apk
+```
+
+Note: `local.properties` points at this container's SDK (`/opt/android-sdk`). On your machine delete it and let Android Studio regenerate it, or set `sdk.dir` to your own SDK path.
+
+**Post-install setup (enforcement is opt-in by OS design):**
+1. Open the app -> log into instagram.com in the WebView.
+2. Settings -> Apps -> Special app access -> **Notification access** -> enable *No Doomscroll* (required for DM push alerts).

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Guard status bar: shows remaining DM-reel budget / last blocked attempt -->
+    <TextView
+        android:id="@+id/chip_guard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/guard_bar"
+        android:padding="10dp"
+        android:textColor="@color/on_guard_bar"
+        android:textSize="13sp"
+        android:text="@string/guard_ready" />
+
+    <!-- Push-permission prompt for DM notifications -->
+    <LinearLayout
+        android:id="@+id/push_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:background="@color/push_prompt"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/push_prompt"
+            android:textColor="@color/ink"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btn_enable_push"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/push_enable" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.meta.instagram.nodoomscroll.guard.NoScrollWebView
+            android:id="@+id/web"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Reels tab dead-end overlay: never loads /reels -->
+        <LinearLayout
+            android:id="@+id/reels_dead_end"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/scrim"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_lock"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/reels_dead_end_title"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/ink" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="32dp"
+                android:gravity="center"
+                android:text="@string/reels_dead_end_body"
+                android:textColor="@color/muted" />
+
+            <Button
+                android:id="@+id/btn_back_to_inbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/reels_dead_end_cta" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Exactly three tabs. Reels is a dead end by design. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="@color/nav">
+
+        <TextView
+            android:id="@+id/tab_home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/tab_home"
+            android:textColor="@color/on_nav"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tab_inbox"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/tab_inbox"
+            android:textColor="@color/on_nav"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tab_reels"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/tab_reels_locked"
+            android:textColor="@color/muted"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

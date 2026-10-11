@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         web.guardManager = guard
         web.onBlockedAttempt = { kind, _ -> onBlocked(kind, "") }
-        web.webViewClient = object : web.GuardWebViewClient() {
+        web.webViewClient = object : NoScrollWebView.GuardWebViewClient(web) {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 detectLoggedIn(url)

@@ -23,7 +23,7 @@ class DmNotificationListenerService : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         val n = sbn?.notification ?: return
         if (sbn.packageName != INSTAGRAM_PACKAGE) return
-        if (!looksLikeDirectMessage(n)) return
+        if (!looksLikeDirectMessage(sbn)) return
 
         val extras = n.extras
         val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
@@ -58,8 +58,9 @@ class DmNotificationListenerService : NotificationListenerService() {
      * Heuristic: Instagram uses different channels/tags per event type. We only
      * forward things that read like a message, so likes/follow requests stay quiet.
      */
-    private fun looksLikeDirectMessage(n: Notification): Boolean {
-        val tag = n.tag ?: ""
+    private fun looksLikeDirectMessage(sbn: StatusBarNotification): Boolean {
+        val n = sbn.notification ?: return false
+        val tag = sbn.tag ?: ""
         val haystack = listOfNotNull(
             n.extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString(),
             n.extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString(),

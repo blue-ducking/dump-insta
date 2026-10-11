@@ -1,6 +1,7 @@
 package com.meta.instagram.nodoomscroll.guard
 
 import android.annotation.SuppressLint
+import java.io.ByteArrayInputStream
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -10,8 +11,8 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
+import androidx.webkit.WebViewCompat
 import com.meta.instagram.nodoomscroll.policy.DoomscrollPolicy
 
 /**
@@ -58,12 +59,22 @@ class NoScrollWebView @JvmOverloads constructor(
         installDocumentStartScript()
     }
 
+    /**
+     * Inject the guard before any Instagram JS runs. On WebViews that support it
+     * we use a `document_start` script on every same-origin document (the only
+     * reliable way to wrap history.pushState/fetch/XHR before the SPA boots);
+     * otherwise [GuardWebViewClient.onPageFinished] re-injects as a fallback.
+     */
     private fun installDocumentStartScript() {
         if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) return
         try {
-            WebSettingsCompat.setDocumentStartScript(settings, setOf(GuardJs.build()))
+            WebViewCompat.addDocumentStartJavaScript(
+                this,
+                GuardJs.build(),
+                setOf(INSTAGRAM_WEB_ORIGIN),
+            )
         } catch (_: RuntimeException) {
-            // Feature reported but unsupported by this WebView APK; page-finish injection covers us.
+            // Feature advertised by an older Trichrome; page-finish injection still covers us.
         }
     }
 
@@ -102,13 +113,22 @@ class NoScrollWebView @JvmOverloads constructor(
         }
     }
 
-    /** Layer 3 client: URL-level enforcement + reel-open accounting. */
-    inner class GuardWebViewClient : WebViewClient() {
+    /**
+     * Factory for layer 3. A plain nested class (not an `inner class`) so callers
+     * can subclass it: `object : web.newGuardClient() { ... }`.
+     */
+    fun newGuardClient(): GuardWebViewClient = GuardWebViewClient(this)
+
+    /**
+     * Layer 3 client: URL-level enforcement + reel-open accounting.
+     * `open` + non-inner so hosts can subclass it and still hook page events.
+     */
+    open class GuardWebViewClient(private val host: NoScrollWebView) : WebViewClient() {
 
         override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
             val u = request?.url?.toString() ?: return false
-            if (policy.isForbiddenSurface(u)) {
-                post { onBlockedAttempt?.invoke("nav", u) }
+            if (host.policy.isForbiddenSurface(u)) {
+                host.post { host.onBlockedAttempt?.invoke("nav", u) }
                 return true
             }
             return super.shouldOverrideUrlLoading(view, request)
@@ -116,30 +136,31 @@ class NoScrollWebView @JvmOverloads constructor(
 
         override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
             val u = request?.url?.toString()
-            if (u != null && policy.isForbiddenSurface(u) && !request.isForMainFrame) {
+            if (u != null && host.policy.isForbiddenSurface(u) && !request.isForMainFrame) {
                 // Sub-resource loads of the reels/explore data endpoints are refused too.
-                post { onBlockedAttempt?.invoke("subresource", u) }
-                return EMPTY
+                host.post { host.onBlockedAttempt?.invoke("subresource", u) }
+                return emptyResponse()
             }
             return super.shouldInterceptRequest(view, request)
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            evaluateJavascript(GuardJs.build(), null)
+            host.evaluateJavascript(GuardJs.build(), null)
             if (url != null && REEL_PATH.containsMatchIn(url)) {
                 // Reached via a DM tap (the only way to get here); count it against the budget.
-                guardManager?.tryOpenReel(url)
+                host.guardManager?.tryOpenReel(url)
             } else {
-                guardManager?.closeReel()
+                host.guardManager?.closeReel()
             }
         }
     }
 
     companion object {
         const val INSTAGRAM_WEB = "https://www.instagram.com"
+        private const val INSTAGRAM_WEB_ORIGIN = "https://www.instagram.com"
         private const val SCROLL_SLOP = 18f
         private val REEL_PATH = Regex("/reel[s]?/[^/?#]+")
-        private val EMPTY = WebResourceResponse("text/plain", "utf-8", null)
+        private fun emptyResponse() = WebResourceResponse("text/plain", "utf-8", ByteArrayInputStream(ByteArray(0)))
     }
 }

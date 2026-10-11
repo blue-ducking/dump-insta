@@ -1,6 +1,6 @@
 package com.meta.instagram.nodoomscroll.guard
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.addCallback
@@ -14,7 +14,7 @@ import com.meta.instagram.nodoomscroll.R
  *
  * It is deliberately inescapable: back is swallowed, and it keeps itself on top.
  */
-class LockdownActivity : Activity() {
+class LockdownActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

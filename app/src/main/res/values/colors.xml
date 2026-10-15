@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ink">#FF11100F</color>
+    <color name="muted">#FF6B6775</color>
+    <color name="guard_bar">#FF11100F</color>
+    <color name="on_guard_bar">#FFFFFFFF</color>
+    <color name="push_prompt">#FFFFF3E0</color>
+    <color name="nav">#FFFFFFFF</color>
+    <color name="on_nav">#FF11100F</color>
+    <color name="scrim">#FFF7F6F8</color>
+    <color name="lock_bg">#FFF7F6F8</color>
+    <color name="ic_launcher_background">#FF11100F</color>
+</resources>

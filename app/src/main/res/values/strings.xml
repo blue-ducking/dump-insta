@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">No Doomscroll</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_inbox">Inbox</string>
+    <string name="tab_reels_locked">Reels 🔒</string>
+
+    <string name="guard_ready">Guard active · scrolling disabled · Reels tab unreachable</string>
+    <string name="guard_budget">%1$d reels left today (from DMs only)</string>
+    <string name="guard_blocked">Blocked: %1$s</string>
+
+    <string name="push_prompt">Allow notification access so new DMs are pushed to you.</string>
+    <string name="push_enable">Enable</string>
+
+    <string name="reels_dead_end_title">Reels is locked</string>
+    <string name="reels_dead_end_body">The Reels feed is disabled on purpose. You can still watch a reel someone sent you — open it from the chat in your Inbox.</string>
+    <string name="reels_dead_end_cta">Back to Inbox</string>
+
+    <string name="lock_title">That surface is blocked\n%1$s</string>
+    <string name="lock_subtitle">No Doomscroll keeps the infinite feed away. Your messages are still available.</string>
+    <string name="lock_reason_swipe">Scrolling is hard-disabled.</string>
+    <string name="lock_reason_tab">Reels and Explore are unreachable by design.</string>
+    <string name="lock_reason_budget">You hit today\'s reel limit. Take a break.</string>
+    <string name="lock_cta">Go back to Inbox</string>
+
+    <string name="toast_no_scrolling">Scrolling is disabled here. Taps still work.</string>
+    <string name="toast_logged_in">Signed in to Instagram. Opening your Inbox.</string>
+
+    <string name="notif_channel">Direct messages</string>
+    <string name="notif_dm_title">New message</string>
+    <string name="notif_dm_body">Open to reply — no feed attached.</string>
+</resources>

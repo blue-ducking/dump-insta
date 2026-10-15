@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.NoDoomscroll" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/guard_bar</item>
+        <item name="colorOnPrimary">@color/on_guard_bar</item>
+        <item name="android:statusBarColor">@color/guard_bar</item>
+        <item name="android:windowBackground">@color/scrim</item>
+    </style>
+</resources>
